@@ -22,10 +22,6 @@ dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 }
 
-ext {
-    groupId = 'tech.romashov'
-}
-
 publishing {
     repositories {
         maven {
@@ -39,8 +35,8 @@ publishing {
     }
     publications {
         gpr(MavenPublication) {
-            groupId project.groupId
-            artifactId project.artifactId
+            groupId 'tech.romashov'
+            artifactId 'assert-with-timeout'
             from(components.java)
             pom {
                 name = artifactId
