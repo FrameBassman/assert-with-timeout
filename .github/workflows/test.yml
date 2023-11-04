@@ -36,7 +36,7 @@ jobs:
           gradle-version: 5.6.4
 
       - name: Build and verify
-        run: gradle build
+        run: gradle distZip
 
       - name: Application Version
         id: build_number
@@ -51,4 +51,4 @@ jobs:
           prerelease: false
           title: "Development Build"
           files: |
-            build/distributions/*.jar
+            build/distributions/*.zip
