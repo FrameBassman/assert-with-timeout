@@ -22,6 +22,10 @@ dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 }
 
+ext {
+    groupId = 'tech.romashov'
+}
+
 publishing {
     repositories {
         maven {
@@ -35,7 +39,36 @@ publishing {
     }
     publications {
         gpr(MavenPublication) {
+            groupId project.groupId
+            artifactId project.artifactId
             from(components.java)
+            pom {
+                name = artifactId
+                description = 'Selenide = concise API for Selenium WebDriver'
+                url = 'https://github.com/framebassman/assert-with-timeout'
+                inceptionYear = '2011'
+                licenses {
+                    license {
+                        name = 'MIT'
+                        url = 'https://opensource.org/licenses/MIT'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'framebassman'
+                        name = 'Dmitry Romashov'
+                    }
+                    develoer {
+                        id = 'vladimir_popov'
+                        name = 'Vladimir Popov'
+                    }
+                }
+                scm {
+                    connection = 'scm:git@github.com:framebassman/assert-with-timeout.git'
+                    developerConnection = 'scm:git@github.com:framebassman/assert-with-timeout.git'
+                    url = 'https://github.com/framebassman/assert-with-timeout'
+                }
+            }
         }
     }
 }
