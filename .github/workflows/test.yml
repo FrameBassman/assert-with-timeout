@@ -3,11 +3,8 @@ name: CI/CD
 'on':
   pull_request:
   push:
-
-#on:
-#  push:
-#    branches:
-#      - "feature/ci"
+    branches-ignore:
+      - 'master'
 
 jobs:
   build:
@@ -32,3 +29,9 @@ jobs:
 
       - name: Build and test
         run: gradle build
+
+      - name: Test Report
+        uses: mikepenz/action-junit-report@v4
+        if: success() || failure()    # run this step even if previous step failed
+        with:
+          report_paths: build/test-results/test/TEST-*.xml    # Path to test results
