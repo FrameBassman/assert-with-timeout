@@ -54,7 +54,7 @@ publishing {
                         id = 'framebassman'
                         name = 'Dmitry Romashov'
                     }
-                    develoer {
+                    developer {
                         id = 'vladimir_popov'
                         name = 'Vladimir Popov'
                     }
