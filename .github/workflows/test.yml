@@ -1,0 +1,37 @@
+---
+name: Test
+'on':
+  pull_request:
+  push:
+    branches-ignore:
+      - 'master'
+
+jobs:
+  build:
+    name: Run all tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'adopt-hotspot'
+
+      - uses: gradle/gradle-build-action@v2
+        name: Setup Gradle
+        with:
+          gradle-version: 5.6.4
+
+      - name: Build and test
+        run: gradle build
+
+      - name: Test Report
+        uses: mikepenz/action-junit-report@v4
+        if: success() || failure()    # run this step even if previous step failed
+        with:
+          report_paths: build/test-results/test/TEST-*.xml    # Path to test results
