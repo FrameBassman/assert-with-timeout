@@ -42,12 +42,12 @@ jobs:
             tag_prefix: "v"
 
       - name: Build and verify
-        run: "gradle distZip -Pversion=${{ steps.build_number.outputs.major }}.${{ steps.build_number.outputs.minor }}.${{ steps.build_number.outputs.increment }}-SNAPSHOT"
+        run: "gradle distZip -Pversion=${{ steps.build_number.outputs.major }}.${{ steps.build_number.outputs.minor }}.${{ steps.build_number.outputs.patch }}-SNAPSHOT"
 
       - uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "v${{ steps.build_number.outputs.major }}.${{ steps.build_number.outputs.minor }}.${{ steps.build_number.outputs.increment }}"
+          automatic_release_tag: "v${{ steps.build_number.outputs.major }}.${{ steps.build_number.outputs.minor }}.${{ steps.build_number.outputs.patch }}"
           prerelease: false
           title: "Development Build"
           files: |
