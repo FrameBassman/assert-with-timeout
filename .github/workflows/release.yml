@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    name: Run all tests
+    name: Release new version
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -35,9 +35,6 @@ jobs:
         with:
           gradle-version: 5.6.4
 
-      - name: Build and test
-        run: gradle build
-
       - name: Application Version
         id: build_number
         uses: paulhatch/semantic-version@v5.3.0
@@ -45,6 +42,7 @@ jobs:
           tag_prefix: "v"
           major_pattern: "(MAJOR)"
           minor_pattern: "(MINOR)"
+          debug: true
 
       - name: Assemble zip distribution
         run: "gradle distZip -Pversion=${{ steps.build_number.outputs.major }}.${{ steps.build_number.outputs.minor }}.${{ steps.build_number.outputs.patch }}-SNAPSHOT"
@@ -61,4 +59,4 @@ jobs:
           prerelease: false
           title: "v${{ steps.build_number.outputs.major }}.${{ steps.build_number.outputs.minor }}.${{ steps.build_number.outputs.patch }}"
           files: |
-            build/distributions/*.zip
+            build/distributions/*-SNAPSHOT.zip
