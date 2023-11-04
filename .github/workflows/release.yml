@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - "master"
+      - "feature/publish-to-maven-central"
 
 jobs:
   build:
@@ -42,18 +42,18 @@ jobs:
           debug: true
 
       - name: Assemble zip distribution
-        run: "gradle distZip -Pversion=${{ steps.build_number.outputs.major }}.${{ steps.build_number.outputs.minor }}.${{ steps.build_number.outputs.patch }}-SNAPSHOT"
+        run: "gradle distZip -Pversion=1.0.0"
 
       - name: Publish artifact
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: "gradle publish -Pversion=${{ steps.build_number.outputs.major }}.${{ steps.build_number.outputs.minor }}.${{ steps.build_number.outputs.patch }}-SNAPSHOT"
+        run: "gradle publish -Pversion=1.0.0"
 
       - uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "v${{ steps.build_number.outputs.major }}.${{ steps.build_number.outputs.minor }}.${{ steps.build_number.outputs.patch }}"
+          automatic_release_tag: "v1.0.0"
           prerelease: false
-          title: "v${{ steps.build_number.outputs.major }}.${{ steps.build_number.outputs.minor }}.${{ steps.build_number.outputs.patch }}"
+          title: "v1.0.0"
           files: |
-            build/distributions/*-SNAPSHOT.zip
+            build/distributions/*.zip

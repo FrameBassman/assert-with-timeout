@@ -32,6 +32,16 @@ publishing {
                 password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
             }
         }
+        // maven {
+        //     name 'Maven'
+        //     url project.version.endsWith("-SNAPSHOT") ?
+        //             'https://oss.sonatype.org/content/repositories/snapshots/' :
+        //             'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+        //     credentials {
+        //         username "$sonatypeUsername"
+        //         password "$sonatypePassword"
+        //     }
+        // }
     }
     publications {
         gpr(MavenPublication) {
@@ -40,7 +50,7 @@ publishing {
             from(components.java)
             pom {
                 name = artifactId
-                description = 'Selenide = concise API for Selenium WebDriver'
+                description = 'Assert-With-Timeout is a library for a timeout extension to the standard Hamcrest assertions'
                 url = 'https://github.com/framebassman/assert-with-timeout'
                 inceptionYear = '2011'
                 licenses {
