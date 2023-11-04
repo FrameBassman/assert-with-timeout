@@ -7,4 +7,4 @@ build
 # Ignore gradle wrapper
 gradlew
 gradlew.bat
-gradle
+gradle/wrapper/gradle-wrapper.jar
