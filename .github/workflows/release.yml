@@ -58,7 +58,7 @@ jobs:
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
         run: >
-          gradle publish
+          gradle publish closeAndReleaseStagingRepository
           -PsonatypeUsername=${{ secrets.SONATYPE_USERNAME }}
           -PsonatypePassword=${{ secrets.SONATYPE_PASSWORD }}
           -Psigning.keyId=${{ steps.gpg_setup_step.outputs.keyid }}
