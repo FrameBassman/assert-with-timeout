@@ -28,7 +28,7 @@ jobs:
           gradle-version: 8.4
 
       - name: Build and test
-        run: gradle build
+        run: gradle build --scan
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
