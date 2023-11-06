@@ -62,7 +62,7 @@ jobs:
           -PsonatypeUsername=${{ secrets.SONATYPE_USERNAME }}
           -PsonatypePassword=${{ secrets.SONATYPE_PASSWORD }}
           -Psigning.keyId=${{ steps.gpg_setup_step.outputs.keyid }}
-          -Pversion=v1.0.0
+          -Pversion=1.0.0
           --no-parallel
           --info
 

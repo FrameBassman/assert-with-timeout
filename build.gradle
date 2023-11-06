@@ -45,8 +45,6 @@ publishing {
             groupId 'tech.romashov'
             artifactId 'assert-with-timeout'
             from components.java
-//            artifact tasks.sourcesJar
-//            artifact tasks.javadocJar
             pom {
                 name = artifactId
                 description = 'Assert-With-Timeout is a library for a timeout extension to the standard Hamcrest assertions'
