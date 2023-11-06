@@ -10,6 +10,9 @@ plugins {
     id 'java-library'
     id 'java-library-distribution'
     id 'maven-publish'
+    id 'signing'
+    id 'io.github.gradle-nexus.publish-plugin' version '1.3.0'
+    id 'jacoco'
 }
 
 repositories {
@@ -22,27 +25,38 @@ dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 }
 
-publishing {
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/framebassman/assert-with-timeout")
-            credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
-                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-            }
-        }
+jacocoTestReport {
+    reports {
+        xml.required = true
+        csv.required = false
     }
+}
+
+if (hasProperty('buildScan')) {
+    buildScan {
+        termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+        termsOfServiceAgree = 'yes'
+    }
+}
+
+check.dependsOn jacocoTestReport
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
     publications {
         gpr(MavenPublication) {
             groupId 'tech.romashov'
             artifactId 'assert-with-timeout'
-            from(components.java)
+            from components.java
             pom {
                 name = artifactId
-                description = 'Selenide = concise API for Selenium WebDriver'
+                description = 'Assert-With-Timeout is a library for a timeout extension to the standard Hamcrest assertions'
                 url = 'https://github.com/framebassman/assert-with-timeout'
-                inceptionYear = '2011'
+                inceptionYear = '2023'
                 licenses {
                     license {
                         name = 'MIT'
@@ -67,4 +81,36 @@ publishing {
             }
         }
     }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/framebassman/assert-with-timeout")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
 }
+
+nexusPublishing {
+    repositories {
+        mavenCentral {
+            nexusUrl = uri("https://s01.oss.sonatype.org/service/local/")
+            snapshotRepositoryUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+            username = project.findProperty("sonatypeUsername") ?: System.getenv("SONATYPE_USERNAME")
+            password = project.findProperty("sonatypePassword") ?: System.getenv("SONATYPE_PASSWORD")
+        }
+    }
+}
+
+if (project.hasProperty('signing.keyId')) {
+    apply plugin: 'signing'
+    signing {
+        useGpgCmd()
+        sign publishing.publications.gpr
+        sign configurations.archives
+    }
+}
+
+

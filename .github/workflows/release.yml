@@ -29,7 +29,14 @@ jobs:
       - uses: gradle/gradle-build-action@v2
         name: Setup Gradle
         with:
-          gradle-version: 5.6.4
+          gradle-version: 8.4
+
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        id: gpg_setup_step
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
 
       - name: Application Version
         id: build_number
@@ -42,12 +49,21 @@ jobs:
           debug: true
 
       - name: Assemble zip distribution
-        run: "gradle distZip -Pversion=${{ steps.build_number.outputs.major }}.${{ steps.build_number.outputs.minor }}.${{ steps.build_number.outputs.patch }}-SNAPSHOT"
+        run: "gradle distZip -Pversion=${{ steps.build_number.outputs.major }}.${{ steps.build_number.outputs.minor }}.${{ steps.build_number.outputs.patch }}"
 
       - name: Publish artifact
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: "gradle publish -Pversion=${{ steps.build_number.outputs.major }}.${{ steps.build_number.outputs.minor }}.${{ steps.build_number.outputs.patch }}-SNAPSHOT"
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+        run: >
+          gradle publish closeAndReleaseStagingRepository
+          -PsonatypeUsername=${{ secrets.SONATYPE_USERNAME }}
+          -PsonatypePassword=${{ secrets.SONATYPE_PASSWORD }}
+          -Psigning.keyId=${{ steps.gpg_setup_step.outputs.keyid }}
+          -Pversion=${{ steps.build_number.outputs.major }}.${{ steps.build_number.outputs.minor }}.${{ steps.build_number.outputs.patch }}
+          --no-parallel
+          --info
 
       - uses: marvinpinto/action-automatic-releases@latest
         with:
@@ -56,4 +72,4 @@ jobs:
           prerelease: false
           title: "v${{ steps.build_number.outputs.major }}.${{ steps.build_number.outputs.minor }}.${{ steps.build_number.outputs.patch }}"
           files: |
-            build/distributions/*-SNAPSHOT.zip
+            build/distributions/*.zip
