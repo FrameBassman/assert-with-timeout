@@ -49,7 +49,10 @@ jobs:
           debug: true
 
       - name: Assemble zip distribution
-        run: "gradle distZip -Pversion=${{ steps.build_number.outputs.major }}.${{ steps.build_number.outputs.minor }}.${{ steps.build_number.outputs.patch }}"
+        run: >
+          gradle distZip
+          -Pversion=${{ steps.build_number.outputs.major }}.${{ steps.build_number.outputs.minor }}.${{ steps.build_number.outputs.patch }}
+          --scan
 
       - name: Publish artifact
         env:
@@ -57,13 +60,14 @@ jobs:
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
         run: >
-          gradle publish closeAndReleaseStagingRepository
+          gradle publish
           -PsonatypeUsername=${{ secrets.SONATYPE_USERNAME }}
           -PsonatypePassword=${{ secrets.SONATYPE_PASSWORD }}
           -Psigning.keyId=${{ steps.gpg_setup_step.outputs.keyid }}
           -Pversion=${{ steps.build_number.outputs.major }}.${{ steps.build_number.outputs.minor }}.${{ steps.build_number.outputs.patch }}
           --no-parallel
           --info
+          --scan
 
       - uses: marvinpinto/action-automatic-releases@latest
         with:
